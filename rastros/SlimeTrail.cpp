@@ -80,7 +80,7 @@ void SlimeTrail::play(int id) {
     // Print function (debugging purposes).
     qDebug() << "clicked on: " << hole->objectName();
 
-    // Changes the hole's state.
+    // Changes the hole's state if possible.
     hole->setState(Hole::BlackState);
 
     // Emits signal declaring the end of a turn.
@@ -110,13 +110,13 @@ void SlimeTrail::reset() {
         }
     }
 
-    // Mark the starting position.
+    // Marks the starting position.
     m_board[3][4]->setState(Hole::WhiteState);
 
-    // Reset the player.
+    // Resets the current player.
     m_player = SlimeTrail::RedPlayer;
 
-    // Finally, update the status bar.
+    // Updates the status bar.
     this->updateStatusBar();
 }
 
