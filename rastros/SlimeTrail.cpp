@@ -145,6 +145,9 @@ void SlimeTrail::updateStatusBar() {
 // This function recalculates the playable blocks each turn.
 void SlimeTrail::enableAdjacents(){
 
+    // This variable stores the number of playable blocks available (if 0 game ends).
+    playableBlocks = 0;
+
     // These variables store the current position of the white marble.
     int heightTeste = lastWhitePos[0];
     int widthTeste  = lastWhitePos[1];
@@ -162,6 +165,8 @@ void SlimeTrail::enableAdjacents(){
                     // Enables directly adjacent blocks.
                     if (m_board[i][j]->state() != Hole::BlackState){
                         m_board[i][j]->setMarked(true);
+                        // Updates the amount of playable blocks.
+                        playableBlocks++;
                     }
                     // Disables non adjacent blocks.
                     else {

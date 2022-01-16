@@ -24,6 +24,7 @@ public:
     void enableAdjacents();
     Hole* lastWhite;
     int lastWhitePos[2];
+    int playableBlocks;
 
     SlimeTrail(QWidget *parent = nullptr);
     virtual ~SlimeTrail();
