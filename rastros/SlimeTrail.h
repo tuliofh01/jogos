@@ -21,7 +21,7 @@ public:
     };
     Q_ENUM(Player)
 
-    void enableAdjacents();
+    void enableAdjacents(); void disableAll();
     Hole* lastWhite;
     int lastWhitePos[2];
     int playableBlocks;

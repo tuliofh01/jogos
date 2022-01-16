@@ -88,11 +88,32 @@ void SlimeTrail::play(int id) {
     lastWhite = hole;
     lastWhitePos[0] = id/8; lastWhitePos[1] = id % 8;
 
-    // Recalculates playable blocks.
-    enableAdjacents();
+    // Game over (red wins).
+    if(id/8 == 7 && id % 8 == 0 ){
+        // Displays game result.
+        QMessageBox::information(this, tr("Fim de jogo!"), tr("O jogador vermelho venceu!"));
+        ui->statusbar->showMessage(tr("FIM DE JOGO!"));
+        // Recalculates playable blocks.
+        disableAll();
+    }
+    // Game over (blue wins).
+    else if(id/8 == 0 && id % 8 == 7 ){
+        // Displays game result.
+        QMessageBox::information(this, tr("Fim de jogo!"), tr("O jogador azul venceu!"));
+        ui->statusbar->showMessage(tr("FIM DE JOGO!"));
+        // Recalculates playable blocks.
+        disableAll();
+    }
+    // Next turn
+    else {
+        // Recalculates playable blocks.
+        enableAdjacents();
 
-    // Emits signal declaring the end of a turn.
-    emit turnEnded();
+        // Emits signal declaring the end of a turn.
+        if(playableBlocks > 0){
+        emit turnEnded();
+        }
+    }
 }
 
 // Gets the opposite player's id.
@@ -119,7 +140,7 @@ void SlimeTrail::reset() {
     m_board[3][4]->setState(Hole::WhiteState);
 
     // Stores data regarding the position of the white marble.
-    lastWhite = m_board[3][4]; lastWhitePos[0] = 3; lastWhitePos[1] = 4;
+    lastWhite = m_board[3][4]; lastWhitePos[0] = 3; lastWhitePos[1] = 4; playableBlocks = 8;
 
     // Calculates playable blocks.
     enableAdjacents();
@@ -157,6 +178,7 @@ void SlimeTrail::enableAdjacents(){
             // Detects white marble position and disables it as playable.
             if (i == heightTeste && j == widthTeste){
                 m_board[i][j]->setMarked(false);
+                m_board[i][j]->setEnabled(false);
             }
             // Detects all blocks within same x pos as white marble.
             else if ( (i == heightTeste - 1) || (i == heightTeste) || (i == heightTeste + 1)  ){
@@ -165,23 +187,55 @@ void SlimeTrail::enableAdjacents(){
                     // Enables directly adjacent blocks.
                     if (m_board[i][j]->state() != Hole::BlackState){
                         m_board[i][j]->setMarked(true);
+                        m_board[i][j]->setEnabled(true);
                         // Updates the amount of playable blocks.
                         playableBlocks++;
                     }
                     // Disables non adjacent blocks.
                     else {
                         m_board[i][j]->setMarked(false);
+                        m_board[i][j]->setEnabled(false);
                     }
                 }
                 // Disables non adjacent blocks.
                 else {
                     m_board[i][j]->setMarked(false);
+                    m_board[i][j]->setEnabled(false);
                 }
             }
             // Disables non adjacent blocks.
             else {
                 m_board[i][j]->setMarked(false);
+                m_board[i][j]->setEnabled(false);
             }
+        }
+    }
+
+    // Game over (opposite player wins)
+    if(playableBlocks == 0){
+        if(m_player == SlimeTrail::RedPlayer){
+            // Displays game result.
+            QMessageBox::information(this, tr("Fim de jogo!"), tr("O jogador azul venceu!"));
+            ui->statusbar->showMessage(tr("FIM DE JOGO!"));
+            // Recalculates playable blocks.
+            disableAll();
+        }
+        else if(m_player == SlimeTrail::BluePlayer){
+            // Displays game result.
+            QMessageBox::information(this, tr("Fim de jogo!"), tr("O jogador vermelho venceu!"));
+            ui->statusbar->showMessage(tr("FIM DE JOGO!"));
+            // Recalculates playable blocks.
+            disableAll();
+        }
+    }
+}
+
+// Disables all blocks (used in game over).
+void SlimeTrail::disableAll(){
+    for(int i = 0; i < 8; i ++){
+        for(int j = 0; j < 8; j ++){
+            m_board[i][j]->setMarked(false);
+            m_board[i][j]->setEnabled(false);
         }
     }
 }

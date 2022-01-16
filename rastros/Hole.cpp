@@ -40,7 +40,6 @@ void Hole::setMarked(bool marked) {
 
 // Brings the hole button to its initial state.
 void Hole::reset() {
-    this->setEnabled(true);
     m_state = Hole::EmptyState;
     m_marked = false;
     this->updateHole();
