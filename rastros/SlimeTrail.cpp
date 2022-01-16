@@ -80,8 +80,16 @@ void SlimeTrail::play(int id) {
     // Print function (debugging purposes).
     qDebug() << "clicked on: " << hole->objectName();
 
-    // Changes the hole's state if possible.
-    hole->setState(Hole::BlackState);
+    // Moves the white marble forward and then adds a black one to the previous position.
+    lastWhite->setState(Hole::BlackState);
+    hole->setState(Hole::WhiteState);
+
+    // Updates white marble data.
+    lastWhite = hole;
+    lastWhitePos[0] = id/8; lastWhitePos[1] = id % 8;
+
+    // Recalculates playable blocks.
+    enableAdjacents();
 
     // Emits signal declaring the end of a turn.
     emit turnEnded();
@@ -104,14 +112,17 @@ void SlimeTrail::reset() {
         for (int col = 0; col < 8; ++col) {
             Hole* hole = m_board[row][col];
             hole->reset();
-
-            // FIXME: Only neighboor holes should be marked.
-            hole->setMarked(true);
         }
     }
 
-    // Marks the starting position.
+    // Adds white marble to the starting position on the board.
     m_board[3][4]->setState(Hole::WhiteState);
+
+    // Stores data regarding the position of the white marble.
+    lastWhite = m_board[3][4]; lastWhitePos[0] = 3; lastWhitePos[1] = 4;
+
+    // Calculates playable blocks.
+    enableAdjacents();
 
     // Resets the current player.
     m_player = SlimeTrail::RedPlayer;
@@ -129,4 +140,43 @@ void SlimeTrail::showAbout() {
 void SlimeTrail::updateStatusBar() {
     QString player(m_player == SlimeTrail::RedPlayer ? "Vermelho" : "Azul");
     ui->statusbar->showMessage(tr("Vez do Jogador %2").arg(player));
+}
+
+// This function recalculates the playable blocks each turn.
+void SlimeTrail::enableAdjacents(){
+
+    // These variables store the current position of the white marble.
+    int heightTeste = lastWhitePos[0];
+    int widthTeste  = lastWhitePos[1];
+
+    for(int i = 0; i < 8; i ++){
+        for(int j = 0; j < 8; j ++){
+            // Detects white marble position and disables it as playable.
+            if (i == heightTeste && j == widthTeste){
+                m_board[i][j]->setMarked(false);
+            }
+            // Detects all blocks within same x pos as white marble.
+            else if ( (i == heightTeste - 1) || (i == heightTeste) || (i == heightTeste + 1)  ){
+                // Detects all blocks within same y pos as white marble.
+                if ( (j == widthTeste -1 ) || (j == widthTeste) || (j == widthTeste + 1)  ){
+                    // Enables directly adjacent blocks.
+                    if (m_board[i][j]->state() != Hole::BlackState){
+                        m_board[i][j]->setMarked(true);
+                    }
+                    // Disables non adjacent blocks.
+                    else {
+                        m_board[i][j]->setMarked(false);
+                    }
+                }
+                // Disables non adjacent blocks.
+                else {
+                    m_board[i][j]->setMarked(false);
+                }
+            }
+            // Disables non adjacent blocks.
+            else {
+                m_board[i][j]->setMarked(false);
+            }
+        }
+    }
 }

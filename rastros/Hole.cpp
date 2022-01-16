@@ -40,6 +40,7 @@ void Hole::setMarked(bool marked) {
 
 // Brings the hole button to its initial state.
 void Hole::reset() {
+    this->setEnabled(true);
     m_state = Hole::EmptyState;
     m_marked = false;
     this->updateHole();
@@ -63,6 +64,11 @@ QPixmap Hole::stateToPixmap(State state) {
 void Hole::updateHole() {
     // Setup icon.
     this->setIcon(Hole::stateToPixmap(m_state));
+
+    // Makes marked blocks unclickable.
+    if(m_state == Hole::BlackState){
+        this->setEnabled(false);
+     }
 
     // Force reloading stylesheet.
     this->setStyleSheet(this->styleSheet());

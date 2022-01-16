@@ -21,6 +21,10 @@ public:
     };
     Q_ENUM(Player)
 
+    void enableAdjacents();
+    Hole* lastWhite;
+    int lastWhitePos[2];
+
     SlimeTrail(QWidget *parent = nullptr);
     virtual ~SlimeTrail();
 

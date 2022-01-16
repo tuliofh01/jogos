@@ -12,6 +12,9 @@ class Hole : public QPushButton {
     Q_PROPERTY(bool marked READ isMarked WRITE setMarked NOTIFY markedChanged)
 
 public:
+
+    int* adJacentHoles();
+
     enum State {
         EmptyState,
         WhiteState,
