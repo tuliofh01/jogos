@@ -1,6 +1,7 @@
 # jogos
 A small collection of simple and quick games.
+---
 
-![space invaders game](https://i.imgur.com/Z0mnEM6.png "space invaders game").
-
-<img src="https://i.imgur.com/Z0mnEM6.png"/>
+## Space Invaders
+<img src="https://i.imgur.com/Z0mnEM6.png" style="height: 852px; width:480px;"/>
+---
