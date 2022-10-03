@@ -1,0 +1,5 @@
+Aluno: Túlio Ferreira Horta
+
+Como compilar?
+    - Comando: gcc main.c -Wall -lglut -lGL -lGLU -lSOIL -lbass -o jogo
+    - Certifique-se de instalar todas as bibliotecas.
